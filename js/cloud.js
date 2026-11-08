@@ -10,7 +10,7 @@ function cloudSave() { dirty = true; clearTimeout(saveTimer); saveTimer = setTim
 async function flush() {
   if (!user || !dirty) return; dirty = false;
   const { error } = await sb.from('cabines').upsert({ user_id: user.id, data: S, updated_at: new Date().toISOString() });
-  if (error) { dirty = true; toast('⚠️ Enregistrement en ligne impossible : ' + error.message); }
+  if (error) { dirty = true; toast('Enregistrement en ligne impossible : ' + error.message); }
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
 window.addEventListener('pagehide', flush);
@@ -23,18 +23,20 @@ async function loadData() {
 
 /* --- Écrans de connexion --- */
 function authShell(inner) {
-  $('#app').innerHTML = `<div class="hero"><div class="card"><h2>📒 Mosolo</h2>
-  <p class="sub">Gérez votre cabine facilement : caisse, Mobile Money, crédits, forfaits et bénéfices.</p>
-  <div class="logos"><img src="assets/orange.jpg"><img src="assets/airtel.jpg"><img src="assets/mpesa.jpg"><img src="assets/afrimoney.png"></div>${inner}</div></div>`;
+  $('#app').innerHTML = `<div class="hero"><div class="auth-wrap"><div class="auth-brand">${logoMark(56)}<h1>Mosolo+</h1>
+  <p>La gestion simple de votre cabine : caisse, Mobile Money, crédits, forfaits et bénéfices.</p>
+  <ul class="perks"><li>${ic('check', 20)}Soldes mis à jour automatiquement</li><li>${ic('check', 20)}Bénéfices calculés pour vous</li><li>${ic('check', 20)}Données privées et sécurisées</li></ul>
+  <div class="logos"><img src="assets/orange.jpg" alt=""><img src="assets/airtel.jpg" alt=""><img src="assets/mpesa.jpg" alt=""><img src="assets/afrimoney.png" alt=""></div></div>
+  <div class="card auth-card">${inner}</div></div></div>`;
 }
 function renderAuth(mode = 'login', msg = '') {
-  const m = msg ? `<div class="${msg.startsWith('✅') ? 'hint' : 'err'}">${esc(msg)}</div>` : '';
-  if (mode === 'login') return authShell(`<form onsubmit="doLogin(event)"><label>Adresse e-mail</label><input name="email" type="email" required autocomplete="email">
+  const m = msg ? `<div class="${msg.startsWith('OK|') ? 'hint' : 'err'}">${esc(msg.replace(/^OK\|/, ''))}</div>` : '';
+  if (mode === 'login') return authShell(`<h2>Bon retour</h2><p class="sub">Connectez-vous à votre cabine.</p><form onsubmit="doLogin(event)"><label>Adresse e-mail</label><input name="email" type="email" required autocomplete="email">
     <label>Mot de passe</label><input name="password" type="password" required autocomplete="current-password">${m}
     <button class="btn green" id="ab" style="width:100%;margin-top:16px">Se connecter</button></form>
     <p style="margin-top:14px;text-align:center"><a href="#" onclick="renderAuth('forgot');return false">Mot de passe oublié ?</a></p>
     <p style="margin-top:8px;text-align:center">Pas encore de compte ? <a href="#" onclick="renderAuth('signup');return false"><b>Créer un compte</b></a></p>`);
-  if (mode === 'signup') return authShell(`<form onsubmit="doSignup(event)"><label>Nom complet</label><input name="name" required autocomplete="name">
+  if (mode === 'signup') return authShell(`<h2>Créer un compte</h2><p class="sub">Gratuit, prêt en 1 minute.</p><form onsubmit="doSignup(event)"><label>Nom complet</label><input name="name" required autocomplete="name">
     <label>Adresse e-mail</label><input name="email" type="email" required autocomplete="email">
     <label>Téléphone</label><input name="phone" type="tel" required autocomplete="tel" placeholder="+243…">
     <label>Mot de passe (8 caractères minimum)</label><input name="password" type="password" minlength="8" required autocomplete="new-password">
@@ -42,11 +44,11 @@ function renderAuth(mode = 'login', msg = '') {
     <label class="chk"><input type="checkbox" required> J'accepte les conditions d'utilisation et la politique de confidentialité</label>${m}
     <button class="btn green" id="ab" style="width:100%;margin-top:16px">Créer mon compte</button></form>
     <p style="margin-top:14px;text-align:center">Déjà un compte ? <a href="#" onclick="renderAuth('login');return false"><b>Se connecter</b></a></p>`);
-  if (mode === 'forgot') return authShell(`<form onsubmit="doForgot(event)"><p class="sub">Entrez votre e-mail : nous vous envoyons un lien pour choisir un nouveau mot de passe.</p>
+  if (mode === 'forgot') return authShell(`<h2>Mot de passe oublié</h2><form onsubmit="doForgot(event)"><p class="sub">Entrez votre e-mail : nous vous envoyons un lien pour choisir un nouveau mot de passe.</p>
     <label>Adresse e-mail</label><input name="email" type="email" required>${m}
     <button class="btn green" id="ab" style="width:100%;margin-top:16px">Envoyer le lien</button></form>
     <p style="margin-top:14px;text-align:center"><a href="#" onclick="renderAuth('login');return false">← Retour</a></p>`);
-  if (mode === 'newpass') return authShell(`<form onsubmit="doNewPass(event)"><p class="sub">Choisissez votre nouveau mot de passe.</p>
+  if (mode === 'newpass') return authShell(`<h2>Nouveau mot de passe</h2><form onsubmit="doNewPass(event)"><p class="sub">Choisissez votre nouveau mot de passe.</p>
     <label>Nouveau mot de passe</label><input name="password" type="password" minlength="8" required autocomplete="new-password">${m}
     <button class="btn green" id="ab" style="width:100%;margin-top:16px">Enregistrer</button></form>`);
 }
@@ -67,11 +69,11 @@ async function doSignup(e) {
     options: { data: { full_name: v.name.trim(), phone: v.phone.trim() }, emailRedirectTo: location.origin } });
   if (error) return renderAuth('signup', tr(error.message));
   if (data.session) return enter(data.session);
-  renderAuth('login', '✅ Compte créé ! Confirmez votre e-mail (lien reçu), puis connectez-vous.');
+  renderAuth('login', 'OK|Compte créé ! Confirmez votre e-mail (lien reçu), puis connectez-vous.');
 }
 async function doForgot(e) {
   const v = form(e); const { error } = await sb.auth.resetPasswordForEmail(v.email.trim(), { redirectTo: location.origin });
-  renderAuth('forgot', error ? tr(error.message) : '✅ Si cet e-mail existe, un lien vient d\'être envoyé.');
+  renderAuth('forgot', error ? tr(error.message) : 'OK|Si cet e-mail existe, un lien vient d\'être envoyé.');
 }
 async function doNewPass(e) {
   const v = form(e); const { error } = await sb.auth.updateUser({ password: v.password });
@@ -84,7 +86,7 @@ async function logout() { await flush(); await sb.auth.signOut(); }
 /* --- Démarrage --- */
 async function boot() {
   if (!okConfig()) {
-    return authShell('<div class="err">⚠️ Supabase n\'est pas encore configuré. Ouvrez le fichier <b>js/config.js</b> et collez votre URL et votre clé (voir LISEZ-MOI.txt).</div>');
+    return authShell('<div class="err">Supabase n\'est pas encore configuré. Ouvrez le fichier <b>js/config.js</b> et collez votre URL et votre clé (voir LISEZ-MOI.txt).</div>');
   }
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   sb.auth.onAuthStateChange((ev) => {

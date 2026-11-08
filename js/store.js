@@ -5,16 +5,16 @@
 const DB_KEY = 'cabine_gestion_v1';
 
 const ACCOUNTS = [
-  { id: 'caisse_fc',  group: 'cash', name: 'Caisse FC',  cur: 'FC',  icon: '💵' },
-  { id: 'caisse_usd', group: 'cash', name: 'Caisse USD', cur: 'USD', icon: '💲' },
+  { id: 'caisse_fc',  group: 'cash', name: 'Caisse FC',  cur: 'FC',  icon: 'wallet' },
+  { id: 'caisse_usd', group: 'cash', name: 'Caisse USD', cur: 'USD', icon: 'dollar' },
   { id: 'orange',     group: 'mm', name: 'Orange Money', cur: 'FC', logo: 'assets/orange.jpg' },
   { id: 'airtel',     group: 'mm', name: 'Airtel Money', cur: 'FC', logo: 'assets/airtel.jpg' },
   { id: 'mpesa',      group: 'mm', name: 'M-Pesa',       cur: 'FC', logo: 'assets/mpesa.jpg' },
   { id: 'afrimoney',  group: 'mm', name: 'Afrimoney',    cur: 'FC', logo: 'assets/afrimoney.png' },
-  { id: 'd_orange',   group: 'dist', name: 'Fonds Orange',   cur: 'FC', icon: '📶' },
-  { id: 'd_airtel',   group: 'dist', name: 'Fonds Airtel',   cur: 'FC', icon: '📶' },
-  { id: 'd_vodacom',  group: 'dist', name: 'Fonds Vodacom',  cur: 'FC', icon: '📶' },
-  { id: 'd_africell', group: 'dist', name: 'Fonds Africell', cur: 'FC', icon: '📶' },
+  { id: 'd_orange',   group: 'dist', name: 'Fonds Orange',   cur: 'FC', icon: 'signal' },
+  { id: 'd_airtel',   group: 'dist', name: 'Fonds Airtel',   cur: 'FC', icon: 'signal' },
+  { id: 'd_vodacom',  group: 'dist', name: 'Fonds Vodacom',  cur: 'FC', icon: 'signal' },
+  { id: 'd_africell', group: 'dist', name: 'Fonds Africell', cur: 'FC', icon: 'signal' },
 ];
 const A = Object.fromEntries(ACCOUNTS.map(a => [a.id, a]));
 const GROUPS = { cash: 'Caisse (argent liquide)', mm: 'Comptes Mobile Money', dist: 'Fonds de distribution (crédit & forfaits)' };
