@@ -1,0 +1,32 @@
+MOSOLO+ - avec comptes utilisateurs (Supabase) - hébergement Vercel
+===================================================================
+
+ÉTAPE 1 - SUPABASE (base de données + comptes)
+1. Va sur supabase.com > "New project" (choisis un nom et un mot de passe de base de données, région proche).
+2. Menu "SQL Editor" > "New query" > ouvre le fichier supabase.sql, copie TOUT, colle, clique "Run".
+3. Menu "Project Settings" > "API" : copie "Project URL" et la clé "anon public".
+4. Ouvre js/config.js (avec le Bloc-notes) et colle ces deux valeurs entre les guillemets. Enregistre.
+   (N'utilise jamais la clé "service_role".)
+5. (Conseillé pour démarrer vite) "Authentication" > "Providers" > Email : désactive "Confirm email".
+   Sinon chaque nouvel utilisateur devra cliquer sur un lien reçu par e-mail.
+
+ÉTAPE 2 - GITHUB
+1. Crée un compte sur github.com > "New repository" (nom : mosolo) > Create.
+2. Clique "uploading an existing file", glisse TOUT le contenu du dossier mosolo
+   (index.html, css, js, assets, supabase.sql...) puis "Commit changes".
+
+ÉTAPE 3 - VERCEL
+1. Va sur vercel.com > connecte-toi avec GitHub.
+2. "Add New" > "Project" > choisis le dépôt mosolo > "Import".
+3. Ne change aucun réglage (Framework : Other, pas de build) > "Deploy".
+4. Tu reçois un lien du type mosolo.vercel.app.
+
+ÉTAPE 4 - RELIER SUPABASE ET VERCEL
+Supabase > Authentication > URL Configuration :
+ - Site URL = ton lien Vercel (https://mosolo.vercel.app)
+ - Redirect URLs : ajoute le même lien.
+(Nécessaire pour les e-mails de confirmation et "mot de passe oublié".)
+
+TEST : ouvre ton lien > "Créer un compte" > configure les soldes > enregistre une opération.
+Chaque compte a ses propres données, invisibles aux autres.
+Pour modifier le code plus tard : remplace les fichiers sur GitHub, Vercel redéploie tout seul.
